@@ -6,5 +6,6 @@ authors = ["sam0x17"]
 license = "MIT"
 description = "Provides a Staticize trait which provides access to a 'static version of any T that implements Staticize"
 keywords = ["staticize", "traits", "static", "type", "generic"]
+repository = "https://github.com/sam0x17/staticize"
 
 [dependencies]

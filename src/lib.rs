@@ -1,4 +1,6 @@
-use core::any::TypeId;
+#![no_std]
+
+use core::any::{type_name, TypeId};
 
 pub trait Staticize {
     type Static: 'static + ?Sized;
@@ -8,7 +10,7 @@ pub trait Staticize {
     }
 
     fn static_type_name() -> &'static str {
-        &std::any::type_name::<Self::Static>()
+        &type_name::<Self::Static>()
     }
 }
 

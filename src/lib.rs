@@ -27,6 +27,34 @@ where
 }
 
 #[macro_export]
+macro_rules! derive_staticize_tuples {
+    ($($ident:ident),*) => {
+        impl<$($ident: Staticize),*> Staticize for ($($ident),*,)
+        where $(<$ident as Staticize>::Static: Sized),*
+        {
+            type Static = ($($ident::Static),*,);
+        }
+    };
+}
+
+derive_staticize_tuples!(A);
+derive_staticize_tuples!(A, B);
+derive_staticize_tuples!(A, B, C);
+derive_staticize_tuples!(A, B, C, D);
+derive_staticize_tuples!(A, B, C, D, E);
+derive_staticize_tuples!(A, B, C, D, E, F);
+derive_staticize_tuples!(A, B, C, D, E, F, G);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M, N);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O);
+derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P);
+
+#[macro_export]
 macro_rules! derive_staticize {
     ($typ:ty) => {
         impl $crate::Staticize for $typ {
@@ -50,3 +78,5 @@ derive_staticize!(i64);
 derive_staticize!(i128);
 derive_staticize!(f32);
 derive_staticize!(f64);
+derive_staticize!(char);
+derive_staticize!(());

@@ -1,15 +1,15 @@
-use std::any::TypeId;
-
-pub fn static_type_id<T: Staticize>() -> TypeId {
-    TypeId::of::<T::Static>()
-}
-
-pub fn static_type_name<T: Staticize>() -> &'static str {
-    &std::any::type_name::<T::Static>()
-}
+use core::any::TypeId;
 
 pub trait Staticize {
     type Static: 'static + ?Sized;
+
+    fn static_type_id() -> TypeId {
+        TypeId::of::<Self::Static>()
+    }
+
+    fn static_type_name() -> &'static str {
+        &std::any::type_name::<Self::Static>()
+    }
 }
 
 impl<'a, T: ?Sized> Staticize for &'a T

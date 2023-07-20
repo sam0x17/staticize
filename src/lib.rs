@@ -66,8 +66,10 @@ macro_rules! derive_staticize {
 }
 
 derive_staticize!(str);
+derive_staticize!(char);
 derive_staticize!(bool);
 derive_staticize!(usize);
+derive_staticize!(isize);
 derive_staticize!(u8);
 derive_staticize!(u16);
 derive_staticize!(u32);
@@ -80,5 +82,4 @@ derive_staticize!(i64);
 derive_staticize!(i128);
 derive_staticize!(f32);
 derive_staticize!(f64);
-derive_staticize!(char);
 derive_staticize!(());

@@ -2,8 +2,8 @@
 //! [![docs.rs](https://img.shields.io/docsrs/staticize?label=docs)](https://docs.rs/staticize/latest/staticize/)
 //! [![MIT License](https://img.shields.io/github/license/sam0x17/staticize)](https://github.com/sam0x17/staticize/blob/main/LICENSE)
 //!
-//! Staticize provides a [`Staticize`] trait which provides a handy associated type `Static`
-//! which provides a `'static` version of `T` for all `T` that implement [`Staticize`].
+//! Staticize contains a [`Staticize`] trait providing a handy associated type `Static` which
+//! resolves to a `'static` version of `T` for all `T` that implement [`Staticize`].
 //! [`Staticize`] is implemented on all primitives, as well as references, tuples up to size
 //! 16, arrays, and slices of any `T` that implements [`Staticize`]. Implementations are also
 //! provided for a variety of built-in types including but not limited to [`Option`],

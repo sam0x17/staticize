@@ -40,13 +40,18 @@
 
 use core::any::{type_name, TypeId};
 
+/// Provides a handy `Static` associated type which should resolve to a `'static` version of
+/// `T` for all `T` that implement [`Staticize`].
 pub trait Staticize {
+    /// A `'static` version of `T`.
     type Static: 'static + ?Sized;
 
+    /// Returns the [`TypeId`] of the `'static` version of `T`
     fn static_type_id() -> TypeId {
         TypeId::of::<Self::Static>()
     }
 
+    /// Returns the type name of the `'static` version of `T`
     fn static_type_name() -> &'static str {
         &type_name::<Self::Static>()
     }
@@ -66,6 +71,18 @@ where
     type Static = &'static [T::Static];
 }
 
+/// Used to implement [`Staticize`] for n-sized tuples.
+///
+/// For example, to add support for tuples of size 17, you would write:
+///
+/// ```ignore
+/// derive_staticize_tuples!(A, B, C);
+/// ```
+///
+/// Note though that this would compile-error because [`Staticize`] is already implemented for
+/// tuple sizes up to 16. You can use the macro to implement it for tuples of larger sizes, if
+/// needed. Just make sure to provide `N` unique letters separated by commas as input to the
+/// macro.
 #[macro_export]
 macro_rules! derive_staticize_tuples {
     ($($ident:ident),*) => {
@@ -94,6 +111,11 @@ derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M, N);
 derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O);
 derive_staticize_tuples!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P);
 
+/// Implements [`Staticize`] for the specified type.
+///
+/// This will only work for `T: 'static`, and this macro only exists because we cannot do a
+/// blanket impl for `T: 'static` because it would conflict with many of the other impls we
+/// provide.
 #[macro_export]
 macro_rules! derive_staticize {
     ($typ:ty) => {

@@ -4,10 +4,12 @@
 [![docs.rs](https://img.shields.io/docsrs/staticize?label=docs)](https://docs.rs/staticize/latest/staticize/)
 [![MIT License](https://img.shields.io/github/license/sam0x17/staticize)](https://github.com/sam0x17/staticize/blob/main/LICENSE)
 
-Staticize provides a trait called `Staticize` which provides a handy associated type `Static`
-which provides a `'static` version of `T` for all `T` that implement `Staticize`. `Staticize`
-is implemented on all primitives, as well as references, tuples up to size 16, arrays, and
-slices of any `T` that implements `Staticize`.
+Staticize provides a `Staticize` trait which provides a handy associated type `Static` which
+provides a `'static` version of `T` for all `T` that implement `Staticize`. `Staticize` is
+implemented on all primitives, as well as references, tuples up to size 16, arrays, and slices
+of any `T` that implements `Staticize`. Implementations are also provided for a variety of
+built-in types including but not limited to `Option`, `Result` and atomics. `std` and `alloc`
+features are also included that provide more impls.
 
 ## Use Cases
 
@@ -35,3 +37,12 @@ name (as a `&'static str`) of the _static_ version of `T`.
 
 Staticize is completely `no_std`, so it can be used in exotic scenarios where the standard
 library is not available, such as embedded devices or in WASM.
+
+### `std`
+
+The `std` feature adds additional impls for `std` types, such as `String`, `Vec`, etc.
+
+### `alloc`
+
+The `alloc` feature adds additional impls for `alloc` types that are `no_std` safe, such as
+`String`, `Vec`, etc.

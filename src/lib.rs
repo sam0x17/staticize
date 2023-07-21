@@ -1,3 +1,41 @@
+//! Staticize provides a [`Staticize`] trait which provides a handy associated type `Static`
+//! which provides a `'static` version of `T` for all `T` that implement [`Staticize`].
+//! [`Staticize`] is implemented on all primitives, as well as references, tuples up to size
+//! 16, arrays, and slices of any `T` that implements [`Staticize`].
+//!
+//! [![Crates.io](https://img.shields.io/crates/v/staticize)](https://crates.io/crates/staticize)
+//! [![docs.rs](https://img.shields.io/docsrs/staticize?label=docs)](https://docs.rs/staticize/latest/staticize/)
+//! [![MIT License](https://img.shields.io/github/license/sam0x17/staticize)](https://github.com/sam0x17/staticize/blob/main/LICENSE)
+//!
+//! ## Use Cases
+//!
+//! Staticize is useful for situations where you have a `T` but for whatever reason need a
+//! `'static` version of it, such as when you are working with type-erased heap allocations, as
+//! is the case with my [interned](https://crates.io/crates/interned) crate. Another common
+//! use-case is situations where a static version of a type is needed for some generic method,
+//! such as [`core::any::TypeId`].
+//!
+//! For example, a method that takes a value of type `T`, stores it in a static on the heap, and
+//! returns a `'static` reference to the static version of the data on the heap, might use the
+//! following signature:
+//!
+//! ```ignore
+//! pub fn heap_allocate<T: Staticize>(val: T) -> T::Static {
+//!   // ...
+//! }
+//! ```
+//!
+//! ## Features
+//!
+//! Two convenience methods, [`static_type_id`](`Staticize::static_type_id`) and
+//! [`static_type_name`](`Staticize::static_type_id`) are also provided on [`Staticize`]. These
+//! use the facilities in [`core::any`] to return the underlying
+//! [`TypeId`](`core::any::TypeId`) and name (as a `&'static str`) of the _static_ version of
+//! `T`.
+//!
+//! Staticize is completely `no_std`, so it can be used in exotic scenarios where the standard
+//! library is not available, such as embedded devices or in WASM.
+
 #![no_std]
 
 use core::any::{type_name, TypeId};

@@ -38,7 +38,13 @@
 //! Staticize is completely `no_std`, so it can be used in exotic scenarios where the standard
 //! library is not available, such as embedded devices or in WASM.
 
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature = "std")]
+extern crate std;
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
 
 use core::{
     any::{type_name, TypeId},
@@ -108,6 +114,104 @@ where
     <T as Staticize>::Static: Sized,
 {
     type Static = Bound<T::Static>;
+}
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+impl<T: Staticize> Staticize for alloc::vec::Vec<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = alloc::vec::Vec<T::Static>;
+}
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+impl<K: Staticize, V: Staticize> Staticize for alloc::collections::BTreeMap<K, V>
+where
+    <K as Staticize>::Static: Sized,
+    <V as Staticize>::Static: Sized,
+{
+    type Static = alloc::collections::BTreeMap<K::Static, V::Static>;
+}
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+impl<T: Staticize> Staticize for alloc::collections::BTreeSet<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = alloc::collections::BTreeSet<T::Static>;
+}
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+impl<T: Staticize> Staticize for alloc::collections::BinaryHeap<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = alloc::collections::BinaryHeap<T::Static>;
+}
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+impl<T: Staticize> Staticize for alloc::collections::LinkedList<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = alloc::collections::LinkedList<T::Static>;
+}
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+impl<T: Staticize> Staticize for alloc::collections::VecDeque<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = alloc::collections::VecDeque<T::Static>;
+}
+
+#[cfg(feature = "std")]
+impl<T: Staticize> Staticize for std::vec::Vec<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = std::vec::Vec<T::Static>;
+}
+
+#[cfg(feature = "std")]
+impl<K: Staticize, V: Staticize> Staticize for std::collections::BTreeMap<K, V>
+where
+    <K as Staticize>::Static: Sized,
+    <V as Staticize>::Static: Sized,
+{
+    type Static = std::collections::BTreeMap<K::Static, V::Static>;
+}
+
+#[cfg(feature = "std")]
+impl<T: Staticize> Staticize for std::collections::BTreeSet<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = std::collections::BTreeSet<T::Static>;
+}
+
+#[cfg(feature = "std")]
+impl<T: Staticize> Staticize for std::collections::BinaryHeap<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = std::collections::BinaryHeap<T::Static>;
+}
+
+#[cfg(feature = "std")]
+impl<T: Staticize> Staticize for std::collections::LinkedList<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = std::collections::LinkedList<T::Static>;
+}
+
+#[cfg(feature = "std")]
+impl<T: Staticize> Staticize for std::collections::VecDeque<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = std::collections::VecDeque<T::Static>;
 }
 
 /// Used to implement [`Staticize`] for n-sized tuples.
@@ -195,3 +299,9 @@ derive_staticize!(AtomicI32);
 derive_staticize!(AtomicI64);
 derive_staticize!(AtomicIsize);
 derive_staticize!(AtomicUsize);
+
+#[cfg(all(feature = "alloc", not(feature = "std")))]
+derive_staticize!(alloc::string::String);
+
+#[cfg(feature = "std")]
+derive_staticize!(String);

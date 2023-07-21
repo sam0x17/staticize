@@ -8,4 +8,7 @@ description = "Provides a Staticize trait which provides access to a 'static ver
 keywords = ["staticize", "traits", "static", "type", "generic"]
 repository = "https://github.com/sam0x17/staticize"
 
-[dependencies]
+[features]
+default = []
+std = []
+alloc = []

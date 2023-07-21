@@ -1,7 +1,9 @@
 //! Staticize provides a [`Staticize`] trait which provides a handy associated type `Static`
 //! which provides a `'static` version of `T` for all `T` that implement [`Staticize`].
 //! [`Staticize`] is implemented on all primitives, as well as references, tuples up to size
-//! 16, arrays, and slices of any `T` that implements [`Staticize`].
+//! 16, arrays, and slices of any `T` that implements [`Staticize`]. Implementations are also
+//! provided for a variety of built-in types including but not limited to [`Option`],
+//! [`Result`] and atomics.
 //!
 //! [![Crates.io](https://img.shields.io/crates/v/staticize)](https://crates.io/crates/staticize)
 //! [![docs.rs](https://img.shields.io/docsrs/staticize?label=docs)](https://docs.rs/staticize/latest/staticize/)
@@ -38,7 +40,14 @@
 
 #![no_std]
 
-use core::any::{type_name, TypeId};
+use core::{
+    any::{type_name, TypeId},
+    ops::{Bound, ControlFlow},
+    sync::atomic::{
+        AtomicBool, AtomicI16, AtomicI32, AtomicI64, AtomicI8, AtomicIsize, AtomicU16, AtomicU32,
+        AtomicU64, AtomicU8, AtomicUsize, Ordering,
+    },
+};
 
 /// Provides a handy `Static` associated type which should resolve to a `'static` version of
 /// `T` for all `T` that implement [`Staticize`].
@@ -69,6 +78,36 @@ where
     <T as Staticize>::Static: Sized,
 {
     type Static = &'static [T::Static];
+}
+
+impl<T: Staticize> Staticize for Option<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = Option<T::Static>;
+}
+
+impl<T: Staticize, E: Staticize> Staticize for Result<T, E>
+where
+    <T as Staticize>::Static: Sized,
+    <E as Staticize>::Static: Sized,
+{
+    type Static = Result<T::Static, E::Static>;
+}
+
+impl<B: Staticize, C: Staticize> Staticize for ControlFlow<B, C>
+where
+    <B as Staticize>::Static: Sized,
+    <C as Staticize>::Static: Sized,
+{
+    type Static = ControlFlow<B::Static, C::Static>;
+}
+
+impl<T: Staticize> Staticize for Bound<T>
+where
+    <T as Staticize>::Static: Sized,
+{
+    type Static = Bound<T::Static>;
 }
 
 /// Used to implement [`Staticize`] for n-sized tuples.
@@ -143,3 +182,16 @@ derive_staticize!(i128);
 derive_staticize!(f32);
 derive_staticize!(f64);
 derive_staticize!(());
+
+derive_staticize!(Ordering);
+derive_staticize!(AtomicBool);
+derive_staticize!(AtomicU8);
+derive_staticize!(AtomicU16);
+derive_staticize!(AtomicU32);
+derive_staticize!(AtomicU64);
+derive_staticize!(AtomicI8);
+derive_staticize!(AtomicI16);
+derive_staticize!(AtomicI32);
+derive_staticize!(AtomicI64);
+derive_staticize!(AtomicIsize);
+derive_staticize!(AtomicUsize);

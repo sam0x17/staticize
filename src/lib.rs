@@ -53,6 +53,12 @@
 #[cfg(feature = "std")]
 extern crate std;
 
+#[cfg(feature = "std")]
+use std::path::{Path, PathBuf};
+
+#[cfg(feature = "std")]
+use std::ffi::{OsStr, OsString};
+
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
@@ -315,3 +321,15 @@ derive_staticize!(alloc::string::String);
 
 #[cfg(feature = "std")]
 derive_staticize!(String);
+
+#[cfg(feature = "std")]
+derive_staticize!(Path);
+
+#[cfg(feature = "std")]
+derive_staticize!(PathBuf);
+
+#[cfg(feature = "std")]
+derive_staticize!(OsStr);
+
+#[cfg(feature = "std")]
+derive_staticize!(OsString);
